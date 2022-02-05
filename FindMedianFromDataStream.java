@@ -6,13 +6,15 @@ import java.util.PriorityQueue;
 
 
 /**
- * 
+ * LeetCode 295. Find Median from Data Stream
+ * https://leetcode.com/problems/find-median-from-data-stream/
  */
 public class FindMedianFromDataStream {
 
 
     /**
-     * 
+     * This implementation timed out!!!
+     * Was not accepted by LeetCode.
      */
     static class MedianFinder0 {
 
@@ -48,9 +50,6 @@ public class FindMedianFromDataStream {
         public void addNum(int num) {
             pq.add(num);
             n++;
-
-            // ???? ????
-            // System.out.println("addNum <<< pq: " + pq.toString());
         }
         
 
@@ -84,9 +83,6 @@ public class FindMedianFromDataStream {
     }
 
 
-
-
-
     /**
      * Runtime: 144 ms, faster than 57.14% of Java online submissions.
      * Memory Usage: 125.1 MB, less than 7.60% of Java online submissions.
@@ -102,8 +98,8 @@ public class FindMedianFromDataStream {
         /**
          * Class members. 
          */
-        public PriorityQueue<Integer> lowHeap   = null;
-        public PriorityQueue<Integer> highHeap  = null;
+        public PriorityQueue<Integer> pq1   = null;
+        public PriorityQueue<Integer> pq2  = null;
 
 
         /**
@@ -112,14 +108,14 @@ public class FindMedianFromDataStream {
         public MedianFinder() {
 
             // **** ****
-            highHeap  = new PriorityQueue<>((a, b) -> {
+            pq2  = new PriorityQueue<>((a, b) -> {
                 if (a > b) return -1;
                 if (a == b) return 0;
                 return 1;
             });
 
             // **** ****
-            lowHeap  = new PriorityQueue<>();
+            pq1  = new PriorityQueue<>();
         }
         
 
@@ -130,38 +126,38 @@ public class FindMedianFromDataStream {
          */
         public void addNum(int num) {
 
-            // **** add num to highHeap (by default) ****
-            highHeap.add(num);
+            // **** add num to pq2 (by default) ****
+            pq2.add(num);
 
             // **** maxHeapSize >= minHeapSize ****
-            if (highHeap.size() >= lowHeap.size()) {
+            if (pq2.size() >= pq1.size()) {
 
                 // **** sizes different by no more than one OR
-                //      highHeap > lowHeap head ****
-                if ((highHeap.size() > lowHeap.size() + 1) || 
-                    (!highHeap.isEmpty() && !lowHeap.isEmpty() && highHeap.peek() > lowHeap.peek())) {
+                //      pq2 > pq1 head ****
+                if ((pq2.size() > pq1.size() + 1) || 
+                    (!pq2.isEmpty() && !pq1.isEmpty() && pq2.peek() > pq1.peek())) {
 
-                    // **** remove from highHeap ****
-                    var e = highHeap.poll();
+                    // **** remove from pq2 ****
+                    var e = pq2.poll();
 
-                    // **** add to lowHeap ****
-                    if (e != null) lowHeap.add(e);
+                    // **** add to pq1 ****
+                    if (e != null) pq1.add(e);
 
-                    // **** move from lowHeap head to highHeap ****
-                    if (highHeap.size() + 1 < lowHeap.size()) {
+                    // **** move from pq1 head to pq2 ****
+                    if (pq2.size() + 1 < pq1.size()) {
 
-                        // **** remove from lowHeap ****
-                        e = lowHeap.poll();
+                        // **** remove from pq1 ****
+                        e = pq1.poll();
 
-                        // **** add to highHeap ****
-                        if (e != null) highHeap.add(e);
+                        // **** add to pq2 ****
+                        if (e != null) pq2.add(e);
                     }
                 }
             }
 
             // **** add to low heap ****
             else
-                lowHeap.add(num);
+                pq1.add(num);
         }
         
 
@@ -173,18 +169,42 @@ public class FindMedianFromDataStream {
         public double findMedian() {
             
             // **** maxHeapSize > minHeapSize ****
-            if (highHeap.size() > lowHeap.size())
-                return highHeap.peek();
+            if (pq2.size() > pq1.size())
+                return pq2.peek();
             
             // **** maxHeapSize < minHeapSize ****
-            else if (highHeap.size() < lowHeap.size())
-                return lowHeap.peek();
+            else if (pq2.size() < pq1.size())
+                return pq1.peek();
 
             // **** heaps are the same size ****
             else
-                return (highHeap.peek() + lowHeap.peek()) / 2.0;
+                return (pq2.peek() + pq1.peek()) / 2.0;
+        }
+
+
+        /**
+         * Experiment populating the priority queues.
+         * 
+         * !!! NOT PART OF THE SOLUTION !!!
+         */
+        public void addToPqs (int n) {
+
+            // **** initialization ****
+            pq1.clear();
+            pq2.clear();
+            var i = 0;
+
+            // **** populate priority queue 2 ****
+            for ( ; i < n / 2; i++)
+                pq2.add(i + 1);
+
+            // **** populate priority queue 1 ****
+            for ( ; i < n; i++)
+                pq1.add(i + 1);
         }
     }
+
+
 
 
     /**
@@ -225,6 +245,45 @@ public class FindMedianFromDataStream {
         // **** median finder object ****
         // MedianFinder0 obj = null;
         MedianFinder obj = null;
+
+
+        // ???? create object ????
+        obj = new MedianFinder();
+
+        // ???? populate priority queues ????
+        obj.addToPqs(6);
+
+        // ???? display the number of elements in the priority queues ????
+        System.out.println("main <<<           m : " + (obj.pq2.size() + obj.pq1.size()));
+
+        // ???? display priority queues contents ????
+        System.out.println("main <<<   pq2 (head): " + obj.pq2.toString());
+        System.out.println("main <<<   pq1 (head): " + obj.pq1.toString());
+
+        // ???? display head nodes ????
+        System.out.println("main <<< obj.pq2.peek: " + obj.pq2.peek());
+        System.out.println("main <<< obj.pq1.peek: " + obj.pq1.peek());
+
+        // ???? compute median ????
+        System.out.println("main <<<       median: " + (obj.pq2.peek() + obj.pq1.peek()) / 2.0);
+
+        // ???? populate priority queues ????
+        obj.addToPqs(7);
+
+        // ???? display the number of elements in the priority queues ????
+        System.out.println("main <<<           m : " + (obj.pq2.size() + obj.pq1.size()));
+
+        // ???? display priority queues contents ????
+        System.out.println("main <<<   pq2 (head): " + obj.pq2.toString());
+        System.out.println("main <<<   pq1 (head): " + obj.pq1.toString());
+
+        // ???? display head nodes ????
+        System.out.println("main <<< obj.pq2.peek: " + obj.pq2.peek());
+        System.out.println("main <<< obj.pq1.peek: " + obj.pq1.peek());
+
+        // ???? compute median ????
+        System.out.println("main <<<       median: " + (obj.pq2.size() >= obj.pq1.size() ? obj.pq2.peek() : obj.pq1.peek()));
+
 
         // **** loop calling methods ****
         for (var i = 0; i < n; i++) {
