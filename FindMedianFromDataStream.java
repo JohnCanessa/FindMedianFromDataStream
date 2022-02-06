@@ -122,17 +122,17 @@ public class FindMedianFromDataStream {
         /**
          * Add the integer num from the data stream to the data structure.
          * 
-         * Execution:  - Space: 
+         * Execution: O(log(n)) - Space: O(1) 
          */
         public void addNum(int num) {
 
             // **** add num to pq2 (by default) ****
             pq2.add(num);
 
-            // **** maxHeapSize >= minHeapSize ****
+            // **** pq2 size >= pq1 size ****
             if (pq2.size() >= pq1.size()) {
 
-                // **** sizes different by no more than one OR
+                // **** sizes different by no more than 1 OR
                 //      pq2 > pq1 head ****
                 if ((pq2.size() > pq1.size() + 1) || 
                     (!pq2.isEmpty() && !pq1.isEmpty() && pq2.peek() > pq1.peek())) {
@@ -155,7 +155,7 @@ public class FindMedianFromDataStream {
                 }
             }
 
-            // **** add to low heap ****
+            // **** add num to pq1 ****
             else
                 pq1.add(num);
         }
@@ -168,15 +168,15 @@ public class FindMedianFromDataStream {
          */
         public double findMedian() {
             
-            // **** maxHeapSize > minHeapSize ****
+            // **** median in pq2 ****
             if (pq2.size() > pq1.size())
                 return pq2.peek();
             
-            // **** maxHeapSize < minHeapSize ****
+            // **** median in pq1 ****
             else if (pq2.size() < pq1.size())
                 return pq1.peek();
 
-            // **** heaps are the same size ****
+            // **** compute median using both priority queues ****
             else
                 return (pq2.peek() + pq1.peek()) / 2.0;
         }
@@ -203,8 +203,6 @@ public class FindMedianFromDataStream {
                 pq1.add(i + 1);
         }
     }
-
-
 
 
     /**
