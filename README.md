@@ -16,7 +16,7 @@ the problem on the LeetCode site.
 If interested in my comments and approach, I invite you 
 to read the follwoing post in my blog:
 
-<T.B.D.>
+https://www.johncanessa.com/2022/02/06/leetcode-295-find-median-from-data-stream-in-java/
 
 Keep in mind that one of the best ways to learn is to read
 and experiment, and repeat. Practice makes perfect; at least
